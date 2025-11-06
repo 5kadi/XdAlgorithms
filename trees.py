@@ -11,7 +11,6 @@ class BinNode:
         vals = random.sample([i for i in range(100) if i != self.v], random.randint(min_size, max_size))
         for v in vals:
             self.insert(BinNode(v))
-        
 
     def fill_vals_U(self, vals: list):
         queue = [self]
@@ -67,11 +66,43 @@ class BinNode:
             print(*same_level)
 
 
+class MinHeap:
+    def __init__(self):
+        self.heap = []
+    
+    def insert(self, val):
+        self.heap.append(val)
+        i = len(self.heap) - 1
+        while i > 0 and self.heap[(i - 1) // 2] > self.heap[i]:
+            self.heap[i], self.heap[(i - 1) // 2] = self.heap[(i - 1) // 2], self.heap[i]
+            i = (i - 1) // 2
 
+    def heapify(self):
+        def _heapify(i):
+            mn = i
+            l = i * 2 + 1
+            r = i * 2 + 2
+            if l < len(self.heap) and self.heap[mn] > self.heap[l]:
+                mn = l
+            if r < len(self.heap) and self.heap[mn] > self.heap[r]:
+                mn = r
+            if mn != i:
+                self.heap[i], self.heap[mn] = self.heap[mn], self.heap[i]
+                _heapify(mn)
+        self.heapify(0)
 
-root = BinNode(0)
-
-for v in [3, 4]:
-    root.insert(v)
-
-root.print_tree()
+def heapify(arr):
+    def _heapify(i):
+        mn = i
+        l = i * 2 + 1
+        r = i * 2 + 2
+        if l < len(arr) and arr[mn] > arr[l]:
+            mn = l
+        if r < len(arr) and arr[mn] > arr[r]:
+            mn = r
+        if mn != i:
+            arr[i], arr[mn] = arr[mn], arr[i]
+            _heapify(mn)
+    for _ in range(len(arr)):
+        _heapify(0)
+    
