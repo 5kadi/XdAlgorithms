@@ -1,4 +1,6 @@
 from math import inf
+import collections
+import heapq
 
 
 #Dijkstra
@@ -33,11 +35,11 @@ def dijkstra(graph: list, start: int, end: int) -> int:
                     relations[j] = i
                     table[j] = new_w
 
-        i = min_index(table,  checked)
+        i = min_index(table, checked)
         if i >= 0:
             checked.add(i)
 
-        print(table, relations, checked, sep="\t")
+        #print(table, relations, checked, sep="\t")
 
     shortest_route = [end]
 
@@ -47,7 +49,67 @@ def dijkstra(graph: list, start: int, end: int) -> int:
 
     return shortest_route[::-1]
 
-#Floyd (!!!ОСУЖДАЕМ!!!George Droyd!!!ОСУЖДАЕМ!!!)
+#heap version
+def dijkstra_h(graph: list[int], start: int, end: int) -> list:
+    dist = {}
+    rel = [0] * len(graph)
+    h = [(0, start, start)]
+
+    while h:
+        d, n, pn = heapq.heappop(h) #takes the shortest available route
+        if n in dist: continue
+        
+        dist[n] = d
+        rel[n] = pn
+        for sn in range(len(graph[n])):
+            if sn in dist: continue
+            heapq.heappush(h, (d + graph[n][sn], sn, n))
+
+    route = []   
+    curr = end
+    while curr != start:
+        route = [curr] + route
+        curr = rel[curr]
+    return [start] + route
+
+#Prim
+#find the shortest path to connect all points and create Minimum Spanning Tree
+#the only difference from dijkstra is that we store graph[n][sn] instead of d + graph[n][sn]
+def prim_h(graph: list[int]) -> int:
+    total_d, mst = 0, []
+    v = set()
+    h = [(0, 0, 0)]
+    while h:
+        d, n, pn = heapq.heappop(h)
+        if n in v: continue
+
+        total_d += d
+        mst.append((pn, n))
+        v.add(n)
+        for sn in range(len(graph[n])):
+            if sn in v: continue
+            heapq.heappush(h, (graph[n][sn], sn, n)) #so called difference
+    return total_d, mst[1:]
+
+#returns min distance without vertexes
+def prim(graph: list[int]) -> int:
+    total_d = 0
+    dist = collections.defaultdict(lambda: float("inf"))
+    v = set()
+    n = 0
+    for _ in range(len(graph) - 1):
+        v.add(n)
+        nxt = None
+        for sn in range(len(graph)):
+            if sn in v: continue
+            dist[sn] = min(dist[sn], graph[n][sn])
+            if nxt == None or dist[sn] < dist[nxt]: nxt = sn
+
+        total_d += dist[nxt]
+        n = nxt
+    return total_d
+
+#Floyd
 #too hard in english
 #выбирается вершина, через которую будут проходить пути ("вершина-посредник"),
 #а потом для каждых вершин ищется путь через вершину-посредника

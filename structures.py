@@ -106,3 +106,23 @@ def heapify(arr):
     for _ in range(len(arr)):
         _heapify(0)
     
+
+def apply(arr, ops):
+    n = len(arr)
+    diff = [0] * n
+
+    for l, r, num in ops:   
+        diff[max(0, l)] += num
+        diff[min(n - 1, r + 1)] -= num
+
+    for i in range(1, n):
+        diff[i] += diff[i - 1]
+    
+    for i in range(n):
+        arr[i] += diff[i]
+    
+#a = [1, 2, 3, 4, 5, 6, 7]
+##ops = [[0, 2, 4], [4, 100, 10], [2, 4, 100]]
+#apply(a, ops)
+#print(a)
+

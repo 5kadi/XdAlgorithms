@@ -1,5 +1,6 @@
 from arrays import ARR1_SORTED as arr
 
+"""
 def binary_search(arr: list, val: int, start: int, end: int) -> int:
     mid = (start + end) // 2
 
@@ -13,7 +14,27 @@ def binary_search(arr: list, val: int, start: int, end: int) -> int:
         return binary_search(arr, val, mid + 1, end)
     elif arr[mid] > val:
         return binary_search(arr, val, start, mid - 1)
-    
+"""    
+def binary_search(arr, target):
+    l, r = 0, len(arr) - 1
+    while l <= r:
+        m = l + ((r - l) // 2)
+        if arr[m] < target: l = m + 1
+        elif arr[m] > target: r = m - 1
+        else: return m
+    return -1
+
+#returns pos in which a number should be placed (basically bisect_left)
+#ex: pos_search([1, 2, 10, 15, 46], 16) = 4
+def pos_search(arr, target):
+    l, r = 0, len(arr) - 1
+    while l <= r:
+        m = l + ((r - l) // 2)
+        if arr[m] < target: l = m + 1
+        elif arr[m] > target: r = m - 1
+        else: return m
+    return l
+
 def binary_search_bisect(arr: list, val: int, start: int, end: int) -> int:
     from bisect import bisect_left
     idx = bisect_left(arr[start:end+1], val)
@@ -37,7 +58,7 @@ def direct_search(arr: list, mask: list) -> int:
 # 1. p_massive 
 # 2. search
 # ---
-# p[i] - длиннейший перфикс, соответствующий данному суффиксу 
+# p[i] - длиннейший префикс, соответствующий данному суффиксу 
 # p[i - 1] - конец длиннейшего префикса, соответствующего данному суффиксу
 def p_massive(mask: list) -> list:
     length = len(mask)

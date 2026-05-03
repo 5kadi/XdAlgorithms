@@ -108,6 +108,25 @@ def merge_sort(arr: list) -> list:
     res_arr = _merge(arr1, arr2)
     return res_arr
 
+def radix_sort(arr: list) -> list:
+    arr = arr.copy()
+    r = [[] for _ in range(10)] #decimal
+    mx = max(arr)
+    exp = 1
+    while mx // exp > 0:
+        while arr:
+            v = arr.pop()
+            i = (v // exp) % 10
+            r[i].append(v)
+        
+        for b in r:
+            while b:
+                v = b.pop()
+                arr.append(v)
+        exp *= 10 #decimal
+    return arr
+        
+
 
 
 
